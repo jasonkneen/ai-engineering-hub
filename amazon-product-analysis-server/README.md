@@ -1,476 +1,257 @@
-# Apps SDK MCP Server
+# Amazon Product Analysis MCP Server
 
-[![Deploy to mcp-use](https://cdn.mcp-use.com/deploy.svg)](https://mcp-use.com/deploy/start?repository-url=https%3A%2F%2Fgithub.com%2Fmcp-use%2Fmcp-use%2Ftree%2Fmain%2Flibraries%2Ftypescript%2Fpackages%2Fcreate-mcp-use-app%2Fsrc%2Ftemplates%2Fapps-sdk&branch=main&project-name=apps-sdk-template&build-command=npm+install&start-command=npm+run+build+%26%26+npm+run+start&port=3000&runtime=node&base-image=node%3A20)
+A production-ready Model Context Protocol (MCP) server for Amazon product analysis, **built with [mcp-use](https://github.com/mcp-use/mcp-use)** and **powered by [Bright Data](https://brightdata.com)** for Web MCP tool. This server provides an interactive tool and beautiful React widget for analyzing Amazon products with comprehensive insights including pricing, features, specifications, delivery options, and customer reviews.
 
-An MCP server template with OpenAI Apps SDK integration for ChatGPT-compatible widgets.
+## 🚀 Built with mcp-use
+
+This MCP server is powered by **[mcp-use](https://github.com/mcp-use/mcp-use)**, a modern framework for building MCP servers with:
+
+- **Type-safe server creation** - Build MCP servers with full TypeScript support
+- **React widget support** - Create interactive UI components using the OpenAI Apps SDK
+- **Simplified client connections** - Easily connect to other MCP servers
+- **Built-in development tools** - Hot reload, build, and deploy commands
+- **Zero boilerplate** - Focus on your tools, not infrastructure
 
 ## Features
 
-- **🤖 OpenAI Apps SDK**: Full compatibility with ChatGPT widgets
-- **🎨 Official UI Components**: Integrated [OpenAI Apps SDK UI components](https://openai.github.io/apps-sdk-ui/) for consistent, accessible widgets
-- **🛒 Ecommerce Widgets**: Complete ecommerce example with carousel, search, map, and order confirmation
-- **🔄 Automatic Registration**: Widgets auto-register from `resources/` folder
-- **📦 Props Schema**: Zod schema validation for widget props
-- **🌙 Theme Support**: Dark/light theme detection via `useWidget` hook
-- **🛠️ TypeScript**: Complete type safety
-- **🔧 Widget Capabilities**: Full support for `callTool`, `sendFollowUpMessage`, and persistent state
+- 🛒 **Amazon Product Analysis** - Extract comprehensive product data from any Amazon URL
+- 🎨 **Interactive Widget** - Beautiful React widget for displaying product insights
+- 📊 **Rich Data Extraction** - Pricing, features, specifications, delivery, reviews, and seller info
 
-## What's New: Apps SDK Integration
+## Prerequisites
 
-This template demonstrates how to build ChatGPT-compatible widgets using OpenAI's Apps SDK:
+- A Bright Data account ([sign up here](https://brightdata.com))
+- An OpenAI API key ([get one here](https://platform.openai.com/api-keys))
 
-```typescript
-import { useWidget } from 'mcp-use/react';
-
-const MyWidget: React.FC = () => {
-  const { props, theme } = useWidget<MyProps>();
-
-  // props contains validated inputs from OpenAI
-  // theme is 'dark' or 'light' based on ChatGPT setting
-}
-```
-
-## Getting Started
-
-### Development
+## Installation
 
 ```bash
 # Install dependencies
+yarn install
+# or
 npm install
-
-# Start development server
-npm run dev
 ```
 
-This starts:
+## Configuration
+
+1. Copy the environment example file:
+
+```bash
+cp .env.example .env
+```
+
+2. Set the following required environment variables:
+
+```bash
+# Required: Your Bright Data API Key
+BRIGHTDATA_API_KEY=your_brightdata_api_key_here
+
+# Required: Your OpenAI API Key
+# Get from: https://platform.openai.com/api-keys
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+## Development
+
+[mcp-use](https://github.com/mcp-use/mcp-use) provides convenient development commands:
+
+```bash
+# Start development server with hot reload
+yarn dev
+# or
+npm run dev
+
+# Build for production
+yarn build
+# or
+npm run build
+
+# Start production server
+yarn start
+# or
+npm start
+
+# Deploy the server
+yarn deploy
+# or
+npm run deploy
+```
+
+The development server starts:
+
 - MCP server on port 3000
 - Widget serving at `/mcp-use/widgets/*`
 - Inspector UI at `/inspector`
 
-### Production
+## Available Tools
 
-```bash
-# Build the server and widgets
-npm run build
+### `amazon-product-analysis`
 
-# Run the built server
-npm start
+Analyze any Amazon product URL. Opens an interactive widget displaying comprehensive product insights.
+
+**Parameters:**
+
+- `url` (required): Amazon product URL (must contain valid full URL of the product page)
+- `zipcode` (optional): ZIP code for location-specific pricing and delivery
+
+**Widget:** `amazon-product-analysis` - Interactive product analysis display
+
+**Returns:** Structured product data including:
+
+- Product info (title, image, price, rating, reviews)
+- Pricing breakdown (original price, discount, savings)
+- Product features
+- Specifications
+- Delivery options
+- Seller information
+- Customer reviews summary
+- Category rankings
+
+## UI Widgets
+
+This server includes a custom React widget built with [mcp-use](https://github.com/mcp-use/mcp-use):
+
+### Amazon Product Analysis (`amazon-product-analysis`)
+
+An interactive widget for displaying product insights:
+
+- **Product Card** - Title, image, price, and star rating
+- **Image Gallery** - Zoomable carousel with thumbnails
+- **Pricing Deal** - Original price, discount percentage, savings
+- **Features List** - Key product features
+- **Delivery Info** - Standard and fast shipping options
+- **Seller Info** - Seller name, rankings, categories
+- **Customer Reviews** - Review summary and top review
+- **Product Specs** - Technical specifications table
+
+The widget is built with:
+
+- React 19
+- Tailwind CSS
+- TanStack Query
+- Zod validation
+- OpenAI Apps SDK hooks
+
+## Architecture
+
+This server demonstrates the power of [mcp-use](https://github.com/mcp-use/mcp-use):
+
+- **Server-side**: Uses [`mcp-use/server`](https://github.com/mcp-use/mcp-use) to create tools and widgets
+- **Client-side**: Uses [`mcp-use/react`](https://github.com/mcp-use/mcp-use) for widget hooks
+- **Type-safe**: Full TypeScript support with Zod schemas
+- **Bright Data Integration**: Amazon product scraping via Bright Data SDK
+- **OpenAI Integration**: GPT-4o for intelligent data extraction
+
+### Data Flow
+
+```
+User → ChatGPT → MCP Server → amazon-product-analysis tool
+                                       ↓
+                              Bright Data SDK
+                                       ↓
+                                 Amazon Website
+                                       ↓
+                              GPT-4o Data Extraction
+                                       ↓
+                                Widget Display
+                                       ↓
+                            Product Insights UI
 ```
 
 ## Project Structure
 
 ```
-apps-sdk/
-├── resources/                          # React widget components
-│   ├── display-weather.tsx              # Weather widget example
-│   ├── ecommerce-carousel.tsx           # Ecommerce product carousel
-│   ├── product-search-result.tsx        # Product search with filters
-│   ├── stores-locations-map.tsx         # Store locations map
-│   └── order-confirmation.tsx           # Order confirmation widget
-├── index.ts                             # Server entry point (includes brand info tool)
-├── package.json
-├── tsconfig.json
-└── README.md
+amazon-product-analysis-server/
+├── index.ts                              # Main server file with API endpoints
+├── resources/
+│   └── amazon-product-analysis/
+│       ├── widget.tsx                    # Main widget component
+│       ├── types.ts                      # Zod schemas and TypeScript types
+│       ├── server.ts                     # Server-side analysis logic
+│       ├── brightdata-tools.ts           # Bright Data integration
+│       ├── utils.ts                      # Utility functions (image proxy)
+│       ├── hooks/
+│       │   └── useProductAnalysis.ts     # React Query hook
+│       └── components/
+│           ├── ProductCard.tsx           # Product display
+│           ├── ImageGallery.tsx          # Image carousel
+│           ├── PricingDeal.tsx           # Price info
+│           ├── Features.tsx              # Features list
+│           ├── DeliveryInfo.tsx          # Shipping options
+│           ├── SellerInfo.tsx            # Seller details
+│           ├── CustomerReviews.tsx       # Reviews summary
+│           └── ProductSpecs.tsx          # Specifications
+├── package.json                          # Dependencies
+├── tsconfig.json                         # TypeScript configuration
+└── README.md                             # This file
 ```
 
-## How Automatic Registration Works
+## Deployment
 
-All React components in the `resources/` folder are automatically registered as MCP tools and resources when they export `widgetMetadata`:
+### mcp-use Cloud
 
-```typescript
-import { z } from 'zod';
-import type { WidgetMetadata } from 'mcp-use/react';
+```bash
+# Install the CLI (if not already done)
+npm install -g @mcp-use/cli
 
-const propSchema = z.object({
-  city: z.string().describe('The city name'),
-  temperature: z.number().describe('Temperature in Celsius'),
-});
+# Login to mcp-use cloud
+npm run mcp-use login
 
-export const widgetMetadata: WidgetMetadata = {
-  description: 'My widget description',
-  props: propSchema,
-};
-
-const MyWidget: React.FC = () => {
-  const { props } = useWidget<z.infer<typeof propSchema>>();
-  // Your widget implementation
-};
-
-export default MyWidget;
+# Deploy your server
+npm run mcp-use deploy
 ```
 
-This automatically creates:
-- **Tool**: `display-weather` - Accepts parameters via OpenAI
-- **Resource**: `ui://widget/display-weather` - Static access
-
-## Building Widgets with Apps SDK
-
-### Using the `useWidget` Hook
-
-```typescript
-import { useWidget } from 'mcp-use/react';
-
-interface MyProps {
-  title: string;
-  count: number;
-}
-
-const MyWidget: React.FC = () => {
-  const { props, theme } = useWidget<MyProps>();
-
-  // props are validated and typed based on your schema
-  // theme is automatically set by ChatGPT
-
-  return (
-    <div className={theme === 'dark' ? 'dark-theme' : 'light-theme'}>
-      <h1>{props.title}</h1>
-      <p>Count: {props.count}</p>
-    </div>
-  );
-};
-```
-
-### Defining Widget Metadata
-
-Use Zod schemas to define widget inputs:
-
-```typescript
-import { z } from 'zod';
-import type { WidgetMetadata } from 'mcp-use/react';
-
-const propSchema = z.object({
-  name: z.string().describe('Person name'),
-  age: z.number().min(0).max(120).describe('Age in years'),
-  email: z.string().email().describe('Email address'),
-});
-
-export const widgetMetadata: WidgetMetadata = {
-  description: 'Display user information',
-  props: propSchema,
-};
-```
-
-### Theme Support
-
-Automatically adapt to ChatGPT's theme:
-
-```typescript
-const { theme } = useWidget();
-
-const bgColor = theme === 'dark' ? 'bg-gray-900' : 'bg-white';
-const textColor = theme === 'dark' ? 'text-gray-100' : 'text-gray-800';
-```
-
-## Official UI Components
-
-This template uses the [OpenAI Apps SDK UI component library](https://openai.github.io/apps-sdk-ui/) for building consistent, accessible widgets. The library provides:
-
-- **Button**: Primary, secondary, and outline button variants
-- **Card**: Container component for content sections
-- **Carousel**: Image and content carousel with transitions
-- **Input**: Form input fields
-- **Icon**: Consistent iconography
-- **Transition**: Smooth animations and transitions
-
-Import components like this:
-
-```typescript
-import {
-  Button,
-  Card,
-  Carousel,
-  CarouselItem,
-  Transition,
-  Icon,
-  Input,
-} from '@openai/apps-sdk-ui';
-```
-
-## Ecommerce Widgets
-
-This template includes a complete ecommerce example with four widgets:
-
-### 1. Ecommerce Carousel (`ecommerce-carousel.tsx`)
-
-A product carousel widget featuring:
-- Title and description
-- Carousel of product items with placeholder images
-- Info button and Add to Cart button for each item
-- Uses official Carousel, Card, Button, Icon, and Transition components
-- Integrates with `callTool` for cart operations
-- Persistent state management
-
-### 2. Product Search Result (`product-search-result.tsx`)
-
-A search results widget with:
-- Search input with real-time filtering
-- Price range filters and stock status filter
-- Grid layout of product cards
-- Uses `callTool` to perform searches
-- Uses `sendFollowUpMessage` to update conversation
-- Persistent filter state
-
-### 3. Stores Locations Map (`stores-locations-map.tsx`)
-
-A store locator widget featuring:
-- Interactive map display (placeholder)
-- List of store locations with details
-- Distance calculation
-- Get directions functionality
-- Store details on click
-- Uses `callTool` for directions and store info
-
-### 4. Order Confirmation (`order-confirmation.tsx`)
-
-An order confirmation widget with:
-- Order summary and items list
-- Shipping information
-- Order status tracking
-- Track order and view receipt actions
-- Uses `callTool` for order tracking
-
-## Brand Info Tool
-
-The template includes a `get-brand-info` tool (normal MCP tool, not a widget) that returns brand information:
-
-```typescript
-// Call the tool
-await client.callTool('get-brand-info', {});
-
-// Returns brand details including:
-// - Company name, tagline, description
-// - Mission and values
-// - Contact information
-// - Social media links
-```
-
-## Example: Weather Widget
-
-The included `display-weather.tsx` widget demonstrates:
-
-1. **Schema Definition**: Zod schema for validation
-2. **Metadata Export**: Widget registration info
-3. **Theme Detection**: Dark/light mode support
-4. **Type Safety**: Full TypeScript support
-
-```typescript
-// Get props from OpenAI Apps SDK
-const { props, theme } = useWidget<WeatherProps>();
-
-// props.city, props.weather, props.temperature are validated
-```
-
-## Using Widgets in ChatGPT
-
-### Via Tool Call
-
-```typescript
-await client.callTool('display-weather', {
-  city: 'San Francisco',
-  weather: 'sunny',
-  temperature: 22
-});
-```
-
-### Via Resource Access
-
-```typescript
-await client.readResource('ui://widget/display-weather');
-```
-
-## Customization Guide
-
-### Adding New Widgets
-
-1. Create a React component in `resources/my-widget.tsx`:
-
-```tsx
-import React from 'react';
-import { z } from 'zod';
-import { useWidget, type WidgetMetadata } from 'mcp-use/react';
-
-const propSchema = z.object({
-  message: z.string().describe('Message to display'),
-});
-
-export const widgetMetadata: WidgetMetadata = {
-  description: 'Display a message',
-  props: propSchema,
-};
-
-type Props = z.infer<typeof propSchema>;
-
-const MyWidget: React.FC = () => {
-  const { props, theme } = useWidget<Props>();
-
-  return (
-    <div>
-      <h1>{props.message}</h1>
-    </div>
-  );
-};
-
-export default MyWidget;
-```
-
-2. The widget is automatically registered!
-
-### Adding Traditional MCP Tools
-
-You can mix Apps SDK widgets with regular MCP tools:
-
-```typescript
-import { text } from 'mcp-use/server';
-
-server.tool({
-  name: 'get-data',
-  description: 'Fetch data from API',
-  cb: async () => {
-    return text('Data');
-  },
-});
-```
-
-## Testing Your Widgets
-
-### Via Inspector UI
-
-1. Start the server: `npm run dev`
-2. Open: `http://localhost:3000/inspector`
-3. Test widgets interactively
-
-### Direct Browser Access
-
-Visit: `http://localhost:3000/mcp-use/widgets/display-weather`
-
-### Via MCP Client
-
-```typescript
-import { createMCPClient } from 'mcp-use/client';
-
-const client = createMCPClient({
-  serverUrl: 'http://localhost:3000/mcp',
-});
-
-await client.connect();
-
-// Call widget as tool
-const result = await client.callTool('display-weather', {
-  city: 'London',
-  weather: 'rain',
-  temperature: 15
-});
-```
-
-## Apps SDK vs Other Widget Types
-
-| Feature           | Apps SDK           | External URL | Remote DOM |
-| ----------------- | ------------------ | ------------ | ---------- |
-| ChatGPT Compatible | ✅ Yes            | ❌ No        | ❌ No      |
-| Theme Detection   | ✅ Automatic      | ❌ Manual    | ❌ Manual  |
-| Props Validation  | ✅ Zod Schema     | ❌ Manual    | ❌ Manual  |
-| React Support     | ✅ Full           | ✅ Full      | ❌ Limited |
-| OpenAI Metadata   | ✅ Yes            | ❌ No        | ❌ No      |
-
-## Benefits of Apps SDK
-
-✅ **ChatGPT Native** - Works seamlessly in ChatGPT
-✅ **Theme Aware** - Automatic dark/light mode
-✅ **Type Safe** - Full TypeScript with Zod validation
-✅ **Simple API** - One hook for all props
-✅ **Auto Registration** - Export metadata and done
+### Other Platforms
+
+The server can be deployed to any Node.js hosting platform:
+
+- Vercel
+- Railway
+- Render
+- Fly.io
+- AWS Lambda (with adapter)
+- Google Cloud Run
+
+Make sure to set the `MCP_URL` environment variable to your production URL.
+
+## Usage in ChatGPT
+
+1. Deploy your application and get the MCP endpoint URL (e.g., `https://your-app.vercel.app/mcp`)
+2. In ChatGPT, go to `Apps & Connectors` → `Advanced Settings` and enable developer mode
+3. Create Connector:
+   - Go to `Apps & Connectors` and click `Create`
+   - Enter a name for your connector
+   - Enter your MCP server URL
+   - Select `No Authentication` (or configure auth if needed)
+   - Accept the terms and conditions
+   - Click `Create`
+4. Create a new chat and use the `/` command to access the connector
+5. Try: "Analyze this Amazon product: https://www.amazon.in/iPhone-Pro-Max-512-Promotion/dp/B0FQG8XCJ1?ref_=ast_sto_dp"
 
 ## Troubleshooting
 
-### Widget Not Loading
+### Products not analyzing
 
-- Ensure widget has `widgetMetadata` export
-- Check Zod schema is valid
-- Verify widget exists in `dist/resources/mcp-use/widgets/`
+- Check your `BRIGHTDATA_API_KEY` is set correctly
+- Verify the Amazon URL contains valid full URL of the product page
+- Ensure your Bright Data account has credits
+- Check browser console for errors
 
-### Props Not Passed
+### Images not loading
 
-- Ensure schema includes all props
-- Check `.describe()` for each prop
-- Verify `useWidget` hook is called
+- Images are proxied through `/api/image-proxy` to bypass CORS
+- Check that the image proxy endpoint is accessible
 
-### Theme Not Applied
+### Widget not displaying
 
-- Theme is only available in ChatGPT
-- Use `theme` from `useWidget()` hook
-- Test in actual ChatGPT interface
-
-## Migration from Other Templates
-
-Moving from `starter` to `apps-sdk`:
-
-```typescript
-// Before: Manual props handling
-const params = new URLSearchParams(window.location.search);
-const city = params.get('city');
-
-// After: Apps SDK hook
-const { props } = useWidget();
-const city = props.city;
-```
-
-## Using Widget Capabilities
-
-The widgets in this template demonstrate the full capabilities of the Apps SDK:
-
-### Calling Tools (`callTool`)
-
-Widgets can call other MCP tools:
-
-```typescript
-const { callTool } = useWidget();
-
-const handleAction = async () => {
-  const result = await callTool('add-to-cart', {
-    productId: '123',
-    productName: 'Product Name',
-    price: 29.99
-  });
-};
-```
-
-### Sending Follow-up Messages (`sendFollowUpMessage`)
-
-Widgets can send messages to the ChatGPT conversation:
-
-```typescript
-const { sendFollowUpMessage } = useWidget();
-
-await sendFollowUpMessage('Product added to cart successfully!');
-```
-
-### Persistent State (`setState`)
-
-Widgets can maintain state across interactions:
-
-```typescript
-const { setState, state } = useWidget();
-
-// Save state
-await setState({ cart: [...cart, newItem] });
-
-// Read state
-const savedCart = state?.cart || [];
-```
-
-## Component Library Note
-
-This template uses the [OpenAI Apps SDK UI component library](https://openai.github.io/apps-sdk-ui/). The exact component API may vary based on the library version. If you encounter import errors, check the [official documentation](https://openai.github.io/apps-sdk-ui/) for the correct component names and props.
-
-If the official library is not available, you can replace the imports with custom React components or other UI libraries while maintaining the same widget structure.
+- Verify server is running (`npm run dev`)
+- Check that widget is built (`npm run build`)
+- Ensure `widgetMetadata` is exported
+- Check browser console for errors
 
 ## Learn More
 
-- [OpenAI Apps SDK UI Components](https://openai.github.io/apps-sdk-ui/) - Official component library
-- [MCP Documentation](https://modelcontextprotocol.io)
-- [OpenAI Apps SDK](https://platform.openai.com/docs/apps)
 - [mcp-use Documentation](https://docs.mcp-use.com)
-- [React Documentation](https://react.dev/)
-- [Zod Documentation](https://zod.dev/)
-
-Happy building! 🚀
+- [Bright Data Documentation](https://docs.brightdata.com)
+- [OpenAI Apps SDK](https://platform.openai.com/docs/apps)
+- [MCP Protocol](https://modelcontextprotocol.io)
